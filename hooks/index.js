@@ -12,7 +12,8 @@ var services = {
   hipchat: require('./hipchat'),
   slack: require('./slack'),
   twitter: require('./twitter'),
-  facebook: require('./facebook')
+  facebook: require('./facebook'),
+  flowdock: require('./flowdock')
 };
 
 module.exports = {
@@ -21,7 +22,7 @@ module.exports = {
 
     console.log("Processing "+settings.hooks.length+" external hooks");
 
-    async.each(settings.hooks, function(h, done) {
+    async.eachLimit(settings.hooks, 8, function(h, done) {
       if(!services[h.service]) {
         console.error("Invalid service "+h.service+", skipping");
         return done();
@@ -39,6 +40,7 @@ module.exports = {
   },
   twitter: services.twitter,
   facebook: services.facebook,
+  flowdock: services.flowdock,
   webhook: services.webhook,
   hipchat: services.hipchat,
   slack: services.slack
